@@ -1,0 +1,16 @@
+{
+  "name": "journal",
+  "main": "./lib/journal",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "activationCommands": {
+    "atom-workspace": "journal:toggle"
+  },
+  "repository": "https://github.com/atom/journal",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+  }
+}
