@@ -24,3 +24,8 @@ describe "Main module", ->
       atom.commands.dispatch workspaceElement, 'journal:new-entry'
       waitsFor ->
         atom.workspace.getActiveTextEditor()?.getPath() is expectedPath
+
+      runs ->
+        editor = atom.workspace.getActiveTextEditor()
+        expect(editor.lineTextForBufferRow(0)).toBe "# 9:05 AM"
+        expect(editor.getCursorBufferPosition()).toEqual [2, 0]
