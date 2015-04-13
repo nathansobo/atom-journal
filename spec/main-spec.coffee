@@ -44,3 +44,18 @@ describe "Main module", ->
 
       waitsFor "a second heading to be inserted", ->
         editor.lineTextForBufferRow(4) is "# 1:20 PM – "
+
+  describe "when 'journal:list-entries' is dispatched on the workspace element", ->
+    it "displays the entry list as a modal panel", ->
+      jasmine.attachToDOM(workspaceElement)
+
+      atom.commands.dispatch workspaceElement, 'journal:list-entries'
+
+      waitsFor "entry list panel to show", ->
+        main.entryListPanel?.isVisible()
+
+      waitsFor "entry list to populate with entries", ->
+        main.entryList.items?.length > 0
+
+      runs ->
+        expect(main.entryList).toHaveFocus()
