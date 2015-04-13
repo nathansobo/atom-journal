@@ -1,4 +1,5 @@
 path = require 'path'
+{PathScanner, PathSearcher, search} = require 'scandal'
 
 module.exports =
 class Journal
@@ -44,3 +45,23 @@ class Journal
 
   getPath: ->
     atom.config.get('journal.path').replace('~', process.env.HOME ? process.env.USERPROFILE)
+
+  listEntries: ->
+    scanner = new PathScanner(@getPath(), inclusions: ["[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9].md"])
+    searcher = new PathSearcher
+
+    entries = []
+
+    searcher.on 'results-found', ({filePath, matches}) ->
+      date = filePath.match(/(\d\d\d\d\/\d\d\/\d\d).md$/)[1]
+      for {lineText, range} in matches
+        row = range[0][0]
+        time = lineText.match(/\d?\d:\d\d( (AM|PM))?/)[0]
+        title = lineText.match(/[–-—] (.*)$/)?[1]
+        displayText = "#{date} @ #{time}"
+        displayText += " – #{title}" if title?
+        entries.unshift({displayText, filePath, row})
+
+    new Promise (resolve, reject) ->
+      search /^# [0-9]?[0-9]:[0-9][0-9].*/, scanner, searcher, ->
+        resolve(entries)
