@@ -1,12 +1,9 @@
 {
   "name": "journal",
-  "main": "./lib/journal",
+  "main": "./lib/main",
   "version": "0.0.0",
-  "description": "A short description of your package",
-  "activationCommands": {
-    "atom-workspace": "journal:toggle"
-  },
-  "repository": "https://github.com/atom/journal",
+  "description": "Keep a journal with Atom",
+  "repository": "https://github.com/nathansobo/atom-journal-workshop",
   "license": "MIT",
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
