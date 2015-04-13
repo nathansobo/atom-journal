@@ -4,6 +4,16 @@ module.exports =
 class Journal
   createNewEntry: (date) ->
     atom.workspace.open(@entryPathForDate(date)).then (editor) =>
+      editor.setCursorBufferPosition([Infinity, Infinity])
+
+      cursorRow = editor.getCursorBufferPosition().row
+      unless editor.lineTextForBufferRow(cursorRow) is ""
+        editor.insertNewline()
+
+      cursorRow = editor.getCursorBufferPosition().row
+      unless editor.lineTextForBufferRow(Math.max(0, cursorRow - 1)) is ""
+        editor.insertNewline()
+
       editor.insertText "# #{@formattedTimeForDate(date)}\n\n"
 
   entryPathForDate: (date) ->

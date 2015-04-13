@@ -2,7 +2,7 @@ path = require 'path'
 main = require '../lib/main'
 
 describe "Main module", ->
-  [journalPath, workspaceElement] = []
+  [journalPath, workspaceElement, editor] = []
 
   beforeEach ->
     journalPath = path.join(__dirname, 'fixtures')
@@ -22,10 +22,19 @@ describe "Main module", ->
       expectedPath = "#{journalPath}/2015/04/08.md"
 
       atom.commands.dispatch workspaceElement, 'journal:new-entry'
-      waitsFor ->
+      waitsFor "editor to be opened to the correct path", ->
         atom.workspace.getActiveTextEditor()?.getPath() is expectedPath
 
       runs ->
         editor = atom.workspace.getActiveTextEditor()
         expect(editor.lineTextForBufferRow(0)).toBe "# 9:05 AM"
         expect(editor.getCursorBufferPosition()).toEqual [2, 0]
+
+        editor.insertText("Captain's Log, Stardate 43153.7. We are departing the Rana system for Starbase 133.")
+        editor.setCursorBufferPosition([2, 10])
+
+        mockDate.setHours(13, 20)
+        atom.commands.dispatch workspaceElement, 'journal:new-entry'
+
+      waitsFor "a second heading to be inserted", ->
+        editor.lineTextForBufferRow(4) is "# 1:20 PM"
