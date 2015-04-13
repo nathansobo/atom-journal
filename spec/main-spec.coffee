@@ -10,6 +10,7 @@ describe "Main module", ->
 
     workspaceElement = atom.views.getView(atom.workspace)
     waitsForPromise -> atom.packages.activatePackage('journal')
+    waitsForPromise -> atom.packages.activatePackage('snippets')
 
   describe "when 'journal:new-entry' is dispatched on the workspace element", ->
     it "opens a file at a path based on the current date", ->
@@ -27,7 +28,12 @@ describe "Main module", ->
 
       runs ->
         editor = atom.workspace.getActiveTextEditor()
-        expect(editor.lineTextForBufferRow(0)).toBe "# 9:05 AM"
+        editorElement = atom.views.getView(editor)
+        expect(editor.lineTextForBufferRow(0)).toBe "# 9:05 AM – "
+        expect(editor.getCursorBufferPosition()).toEqual [0, 12]
+        atom.commands.dispatch editorElement, 'snippets:next-tab-stop'
+        expect(editor.getSelectedBufferRange()).toEqual [[0, 9], [0, 12]]
+        atom.commands.dispatch editorElement, 'snippets:next-tab-stop'
         expect(editor.getCursorBufferPosition()).toEqual [2, 0]
 
         editor.insertText("Captain's Log, Stardate 43153.7. We are departing the Rana system for Starbase 133.")
@@ -37,4 +43,4 @@ describe "Main module", ->
         atom.commands.dispatch workspaceElement, 'journal:new-entry'
 
       waitsFor "a second heading to be inserted", ->
-        editor.lineTextForBufferRow(4) is "# 1:20 PM"
+        editor.lineTextForBufferRow(4) is "# 1:20 PM – "

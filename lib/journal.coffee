@@ -2,6 +2,8 @@ path = require 'path'
 
 module.exports =
 class Journal
+  setSnippetsService: (@snippetsService) ->
+
   createNewEntry: (date) ->
     atom.workspace.open(@entryPathForDate(date)).then (editor) =>
       editor.setCursorBufferPosition([Infinity, Infinity])
@@ -14,7 +16,10 @@ class Journal
       unless editor.lineTextForBufferRow(Math.max(0, cursorRow - 1)) is ""
         editor.insertNewline()
 
-      editor.insertText "# #{@formattedTimeForDate(date)}\n\n"
+      if @snippetsService
+        @snippetsService.insertSnippet("# #{@formattedTimeForDate(date)}${2: – $1}\n\n$3")
+      else
+        editor.insertText "# #{@formattedTimeForDate(date)}\n\n"
 
   entryPathForDate: (date) ->
     year = date.getFullYear().toString()

@@ -1,4 +1,4 @@
-{CompositeDisposable} = require 'atom'
+{CompositeDisposable, Disposable} = require 'atom'
 
 Journal = require './journal'
 
@@ -21,3 +21,7 @@ module.exports =
 
   deactivate: ->
     @disposables.dispose()
+
+  consumeSnippetsService: (service) ->
+    @journal.setSnippetsService(service)
+    new Disposable => @journal.setSnippetsService(null)
