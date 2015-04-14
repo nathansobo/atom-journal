@@ -46,7 +46,7 @@ describe "Main module", ->
         editor.lineTextForBufferRow(4) is "# 1:20 PM – "
 
   describe "when 'journal:list-entries' is dispatched on the workspace element", ->
-    it "displays the entry list as a modal panel", ->
+    it "displays the entry list as a modal panel that can open past entries", ->
       jasmine.attachToDOM(workspaceElement)
 
       atom.commands.dispatch workspaceElement, 'journal:list-entries'
@@ -57,5 +57,18 @@ describe "Main module", ->
       waitsFor "entry list to populate with entries", ->
         main.entryList.items?.length > 0
 
+      selectedItem = null
+
       runs ->
         expect(main.entryList).toHaveFocus()
+
+        atom.commands.dispatch main.entryList.element, 'core:move-down'
+        selectedItem = main.entryList.getSelectedItem()
+        atom.commands.dispatch main.entryList.element, 'core:confirm'
+
+      waitsFor "item to be opened", ->
+        atom.workspace.getActiveTextEditor()?.getPath() is selectedItem.filePath
+
+      runs ->
+        editor = atom.workspace.getActiveTextEditor()
+        expect(editor.getCursorBufferPosition().row).toBe selectedItem.row
