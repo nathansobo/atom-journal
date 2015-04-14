@@ -13,4 +13,5 @@ class EntryList extends SelectListView
 
   getFilterKey: -> 'displayText'
 
-  confirmed: (item) ->
+  confirmed: ({filePath, row}) ->
+    atom.workspace.open(filePath, initialLine: row)
