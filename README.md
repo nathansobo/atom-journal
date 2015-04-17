@@ -47,7 +47,7 @@ Now we'll create a branch and reset it to a much earlier state in the project so
 
 ```
 git checkout -b workshop
-git reset --hard part0
+git reset --hard part-0
 ```
 
 Every part of this workshop is represented as a tagged commit in this git repository, which I'll be referencing throughout this guide. If you ever get off track want to jump to a particular state of the project, you can use `git reset --hard <tag>` on your `workshop` branch to blow away all your current state and jump straight there.
