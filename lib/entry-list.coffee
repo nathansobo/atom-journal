@@ -2,10 +2,6 @@
 
 module.exports =
 class EntryList extends SelectListView
-  initialize: ->
-    super
-    @on 'focusout', => @cancel()
-
   viewForItem: ({displayText}) ->
     element = document.createElement('li')
     element.innerText = displayText
